@@ -16,7 +16,7 @@ Actions getAction();
 
 void HandleApplication(std::string application);
 
-void HandleSetting(std::string setting, bool& settings, int& selectedApplication, Data& data);
+void HandleSetting(std::string setting, std::string path, bool& settings, int& selectedApplication, Data& data);
 
 int main()
 {
@@ -71,10 +71,10 @@ int main()
 				selectedApplication = 0;
 			}
 			else if(!settings) {
-				HandleApplication( path + "/" + applications[selectedApplication]);
+				HandleApplication( path + "\\" + applications[selectedApplication]);
 			}
 			else {
-				HandleSetting(applications[selectedApplication], settings, selectedApplication, data);
+				HandleSetting(applications[selectedApplication], path + "\\", settings, selectedApplication, data);
 				path = getApplicationsPath(data.directoryName);
 			}
 			break;
@@ -127,7 +127,7 @@ std::string getApplicationsPath(std::string directoryName)
 	std::wstring w_path(&t_path[0]);
 	std::string path(w_path.begin(), w_path.end());
 
-	path += "/";
+	path += "\\";
 	path += directoryName;
 
 	return path;
@@ -208,6 +208,7 @@ std::vector<std::string> getApplications(std::string path, bool settings)
 		applications.push_back("Settings");
 	}
 	else {
+		applications.push_back("Open Directory");
 		applications.push_back("Change Directory");
 		applications.push_back("Exit Settings");
 	}
@@ -233,12 +234,19 @@ Actions getAction() {
 
 void HandleApplication(std::string application)
 {
-	ShellExecuteA(NULL, NULL, application.c_str(), NULL, NULL, 0);
+	ShellExecuteA(NULL, "open", application.c_str(), NULL, NULL, 0);
 }
 
-void HandleSetting(std::string setting, bool &settings, int &selectedApplication, Data &data)
+void HandleSetting(std::string setting, std::string path, bool &settings, int &selectedApplication, Data &data)
 {
-	if (setting == "Change Directory")
+	if (setting == "Open Directory")
+	{
+		std::string cmd = "explorer " + path;
+
+		system(cmd.c_str());
+
+	}
+	else if (setting == "Change Directory")
 	{
 		system("CLS");
 
