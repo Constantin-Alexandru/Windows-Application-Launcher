@@ -234,7 +234,7 @@ Actions getAction() {
 
 void HandleApplication(std::string application)
 {
-	ShellExecuteA(NULL, "open", application.c_str(), NULL, NULL, 0);
+	ShellExecuteA(NULL, NULL, application.c_str(), NULL, NULL, 0);
 }
 
 void HandleSetting(std::string setting, std::string path, bool &settings, int &selectedApplication, Data &data)
